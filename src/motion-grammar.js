@@ -236,13 +236,19 @@ export function mechanism(id) {
 /** Legal transitions keyed by the form the previous state emitted. */
 export const FORM_SUCCESSORS = {
   'void': ['boot-signal', 'assemble', 'cursor-vortex', 'tunnel'],
-  'field': ['assemble', 'density-dissolve', 'type-wall', 'glyph-sphere'],
-  'particles': ['assemble', 'glyph-sphere', 'field'],
-  'fragments': ['shockwave', 'implosion', 'cursor-vortex', 'letter-fragmentation'],
+  // `structural-decay` consumes a built typographic environment, so it follows
+  // the forms that can build one. It was previously absent from every list,
+  // which made a canonical-tier mechanism unreachable as a successor and
+  // capped a planned chain at 9 of the 16 usable mechanisms.
+  'field': ['assemble', 'density-dissolve', 'type-wall', 'glyph-sphere', 'structural-decay'],
+  'fragments': ['shockwave', 'implosion', 'cursor-vortex', 'letter-fragmentation', 'structural-decay'],
   'letterform': ['giant-word', 'letter-fragmentation', 'mask', 'spatial-fold'],
   'solid-form': ['density-dissolve', 'contour-migration', 'implosion', 'type-wall'],
-  'geometry': ['spatial-fold', 'glyph-sphere', 'tunnel'],
-  'space': ['type-wall', 'tunnel', 'spatial-fold', 'glyph-sphere'],
+  'space': ['type-wall', 'tunnel', 'spatial-fold', 'glyph-sphere', 'structural-decay'],
+  // A rejected mechanism is terminal: it chains nowhere. This key is its single
+  // escape route back into the grammar, which is what makes a rejection
+  // recoverable rather than a dead end. No usable mechanism emits `cliche`,
+  // so the planner never enters it.
   'cliche': ['boot-signal'],
 };
 

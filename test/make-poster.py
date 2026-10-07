@@ -6,6 +6,7 @@ The ASCII artwork is produced by the plugin's own deterministic engine (via
 `node src/cli.js svg`), then composed into a designed poster with Pillow. The
 poster therefore shows real engine output, not an illustration of it.
 """
+import json
 import os
 import re
 import subprocess
@@ -75,6 +76,31 @@ def run_engine(brief, out_svg, t, cols=132, rows=34, beats=5):
 def svg_to_image(svg_path, scale=2.0):
     """Unused placeholder retained for API stability; see engine_png()."""
     raise NotImplementedError
+
+
+POSTER_BRIEF = (
+    "15 second ASCII film about memory collapsing into language, "
+    "hero word VOID, phosphor green"
+)
+
+
+def engine_chain(brief, beats=5):
+    """Ask the plugin's own CLI for the transformation chain it would plan."""
+    node = subprocess.run(
+        ["node", "src/cli.js", "plan", brief, "--beats", str(beats), "--json"],
+        cwd=ROOT, capture_output=True, text=True,
+    )
+    if node.returncode != 0:
+        raise SystemExit(f"engine failed: {node.stderr}")
+    plan = json.loads(node.stdout)
+    out = []
+    for link in plan["chain"]:
+        out.append({
+            "mechanism": link["mechanism"],
+            "beat": link["beat"],
+            "emits": link["exit"]["form"],
+        })
+    return out
 
 
 def engine_png(brief, out_png, t, cols=132, rows=34, beats=5, cell_w=7, cell_h=13):
@@ -189,13 +215,19 @@ def main():
     sy = py + pnl_h + 44
     d.text((M, sy), "TRANSFORMATION  CHAIN", font=f_label, fill=MUTED)
 
-    steps = [
-        ("01", "assemble", "0–3s", "solid-form", GREEN),
-        ("02", "type-wall", "3–6s", "fragments", BLUE),
-        ("03", "shockwave", "6–9s", "space", GREEN),
-        ("04", "tunnel", "9–12s", "space", BLUE),
-        ("05", "glyph-sphere", "12–15s", "solid-form", GREEN),
-    ]
+    # Read the chain out of the engine instead of hard-coding it, so the poster
+    # cannot drift from what the CLI actually plans.
+    steps = []
+    for i, link in enumerate(engine_chain(POSTER_BRIEF, beats=5)):
+        steps.append((
+            f"{i + 1:02d}",
+            link["mechanism"],
+            link["beat"],
+            link["emits"],
+            GREEN if i % 2 == 0 else BLUE,
+        ))
+    if not steps:
+        raise SystemExit("the engine returned an empty chain; refusing to draw a blank poster")
     card_w = (W - 2 * M - 4 * 26) // 5
     card_h = 158
     cy0 = sy + 40

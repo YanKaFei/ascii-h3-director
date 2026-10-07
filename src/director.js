@@ -278,6 +278,11 @@ export function review(script) {
   // rather than inventing a failure.
   const prompt = script.prompt ?? '';
   const hasPrompt = prompt.trim().length > 0;
+  // `buildScript` returns a plan without composing a prompt so the caller can
+  // decide whether to render one. The two prompt-dependent checks (`compact`,
+  // `no-cliche`) therefore report what they could not evaluate instead of
+  // inventing a failure — a chain-only script can legitimately score 100/100.
+  // Compose the prompt before gating anything that will be generated.
   const checks = [];
 
   const forms = chain.map((l) => MECHANISM_BY_ID.get(l.mechanism)?.emits).filter(Boolean);

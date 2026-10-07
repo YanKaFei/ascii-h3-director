@@ -2,6 +2,12 @@
 
 The image supplies spectacle. Sound supplies **weight and punctuation**.
 
+Read that as a division of labour, not a metaphor: **sound is the punctuation,
+the image is the spectacle.** The frame is the sentence; the score is the comma,
+the full stop, the dash. Punctuation that argues with its sentence is a defect,
+which is why almost every failure mode below is a piece of music trying to be the
+spectacle as well.
+
 For this visual language, avoid default cyberpunk techno. It competes with the
 frame instead of articulating it.
 
@@ -42,7 +48,11 @@ The engine's density curve is the intended envelope:
 ascii-h3 plan "…"          # prints beats, exit states and the gate
 ```
 
-A major swing every 2–3 seconds is also the sound-design edit rhythm.
+A major swing every 2–3 seconds is also the sound-design edit rhythm. The gate's
+`contrast` check reports that envelope as a number
+(`density spans 0.12–0.94 with 9 major swing(s)`) — place a sound event where the
+curve bottoms out and where it peaks, and leave the transitions between them
+comparatively bare.
 
 ## Compact Suno direction template
 

@@ -349,7 +349,7 @@ DENSITY: three compressed peaks at roughly 0s, 6s and 12s, each released into ne
 TYPOGRAPHY: one cropped hero word per peak, never more than 5 characters, always larger than frame
 TRANSITION MECHANISMS: assemble from sparse field, ASCII tunnel, typographic wall, glyph sphere, implosion, cursor vortex
 ENDING: mid-dive into a cursor-shaped drain, with the camera still accelerating
-CHAIN: assemble → type-wall → implosion → cursor-vortex → tunnel
+CHAIN: tunnel → glyph-sphere → type-wall → cursor-vortex → assemble
 
 NOTES:
   - Analyse function, not appearance: what does each element *become* over time?
@@ -359,12 +359,16 @@ NOTES:
 
 ### Reading the result honestly
 
-- The six named transitions restricted the chain: every link in `CHAIN:` is one
-  of the mechanisms you named, in an order the grammar allows.
+- The six named transitions **restrict** the chain rather than dictating it.
+  Every link in `CHAIN:` is one of the mechanisms you named, and the planner uses
+  five of the six — `implosion` is ignored because no step in the order the
+  grammar allowed needed it.
 - The chain is **not** the order in the observation file. `ASCII tunnel` was
-  named second and planned fifth; the planner followed the forms, starting from
-  the inferred `void` (because `assemble` is reachable from `void`) and ending on
-  `tunnel`, which emits `space` — an ending you can hand to a sequel.
+  named second and is planned first; `assemble` was named first and is planned
+  last. The planner follows the forms, not your list.
+- The chain is **not required to use every name you supplied**. Naming a
+  transition constrains the vocabulary; it is not a checklist. Pass `--beats` to
+  ask for more links when you want a longer chain.
 - The `notes` array in the observation file is **preserved as input but not
   echoed** into the STYLE DNA. It is documentation for the human analyst. If a
   note must influence the plan, it has to become a field: a camera note becomes

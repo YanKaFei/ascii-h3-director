@@ -55,37 +55,39 @@ There are **21 mechanisms**: 7 canonical, 7 strong, 2 support, 5 reject.
 
 Generated from `MECHANISMS`.
 
+Ordered by tier, then by declaration order within each tier.
+
 | id | name | tier | emits | chains into |
 | --- | --- | --- | --- | --- |
-| `boot-signal` | Boot Signal | strong | letterform | `assemble` · `type-wall` · `tunnel` |
 | `assemble` | Assemble from Sparse Field | canonical | solid-form | `type-wall` · `glyph-sphere` · `density-dissolve` |
 | `density-dissolve` | Density Dissolve | canonical | field | `tunnel` · `glyph-sphere` · `cursor-vortex` |
 | `structural-decay` | Structural Decay | canonical | fragments | `shockwave` · `implosion` · `field` |
 | `letter-fragmentation` | Diegetic Letter-Topology Fragmentation | canonical | fragments | `cursor-vortex` · `implosion` · `shockwave` |
+| `implosion` | Implosion | canonical | void | `shockwave` · `cursor-vortex` · `giant-word` |
+| `shockwave` | Command Shockwave | canonical | space | `giant-word` · `field` · `tunnel` |
+| `cursor-vortex` | Cursor Vortex | canonical | void | `boot-signal` · `tunnel` · `assemble` |
+| `boot-signal` | Boot Signal | strong | letterform | `assemble` · `type-wall` · `tunnel` |
 | `contour-migration` | Contour Migration | strong | solid-form | `type-wall` · `tunnel` · `assemble` |
 | `tunnel` | ASCII Tunnel | strong | space | `type-wall` · `spatial-fold` · `glyph-sphere` |
 | `type-wall` | Typographic Wall | strong | fragments | `glyph-sphere` · `shockwave` · `spatial-fold` |
 | `glyph-sphere` | Glyph Sphere | strong | solid-form | `implosion` · `spatial-fold` · `type-wall` |
-| `implosion` | Implosion | canonical | void | `shockwave` · `cursor-vortex` · `giant-word` |
-| `shockwave` | Command Shockwave | canonical | space | `giant-word` · `field` · `tunnel` |
 | `giant-word` | Giant Cropped Typography | strong | letterform | `letter-fragmentation` · `spatial-fold` · `cursor-vortex` |
 | `spatial-fold` | Spatial Fold | strong | space | `tunnel` · `glyph-sphere` · `density-dissolve` |
-| `cursor-vortex` | Cursor Vortex | canonical | void | `boot-signal` · `tunnel` · `assemble` |
 | `field` | Character Field | support | field | `assemble` · `density-dissolve` · `type-wall` |
 | `mask` | Text Mask | support | letterform | `giant-word` · `letter-fragmentation` · `density-dissolve` |
-| `reject-hud` | Decorative HUD | reject | cliche | — |
-| `reject-city` | Generic Cyberpunk City | reject | cliche | — |
-| `reject-glitch` | Meaningless Glitch | reject | cliche | — |
-| `reject-particles` | Unmotivated Particles | reject | cliche | — |
-| `reject-smoke` | Smoke / Liquid Wipe | reject | cliche | — |
+| `reject-hud` | Decorative HUD | reject | cliche | — *(terminal)* |
+| `reject-city` | Generic Cyberpunk City | reject | cliche | — *(terminal)* |
+| `reject-glitch` | Meaningless Glitch | reject | cliche | — *(terminal)* |
+| `reject-particles` | Unmotivated Particles | reject | cliche | — *(terminal)* |
+| `reject-smoke` | Smoke / Liquid Wipe | reject | cliche | — *(terminal)* |
 
-Two mechanisms declare no successors and no other mechanism chains into them:
-`structural-decay` and `mask` (and `contour-migration` is likewise unreachable
-from `FORM_SUCCESSORS`). They are still legal as an **opening** beat — the first
-beat of a chain is chosen freely from the pool — and they are legal as a
-hand-authored middle beat whenever the previous form admits them. They are
-never chosen as a *successor* by the planner, which is why an automatically
-planned chain rarely shows them.
+`chainsTo` is the director's *opinion* — "this inherits well" — and is what the
+planner prefers when candidates tie. `FORM_SUCCESSORS` is the *physical fact* —
+what a form legally admits — and is what bounds the planner. A mechanism may
+appear in the form table without appearing in any `chainsTo`.
+
+The 5 `reject-*` mechanisms are the only ones that describe nothing: they chain
+nowhere and serve as vocabulary for the quality gate to name a failure with.
 
 Each mechanism also owns the sentence it leaves unresolved. `planChain` copies
 this into `link.exit.unresolved`, the prompt's last beat, and the continuation
@@ -160,21 +162,26 @@ below — what has to match is the *form*.
 | previous form | legal successors (tier, what they emit) |
 | --- | --- |
 | `void` | **boot-signal** (strong, emits letterform)<br>**assemble** (canonical, emits solid-form)<br>**cursor-vortex** (canonical, emits void)<br>**tunnel** (strong, emits space) |
-| `field` | **assemble** (canonical, emits solid-form)<br>**density-dissolve** (canonical, emits field)<br>**type-wall** (strong, emits fragments)<br>**glyph-sphere** (strong, emits solid-form) |
-| `particles` | **assemble** (canonical, emits solid-form)<br>**glyph-sphere** (strong, emits solid-form)<br>**field** (support, emits field) |
-| `fragments` | **shockwave** (canonical, emits space)<br>**implosion** (canonical, emits void)<br>**cursor-vortex** (canonical, emits void)<br>**letter-fragmentation** (canonical, emits fragments) |
+| `field` | **assemble** (canonical, emits solid-form)<br>**density-dissolve** (canonical, emits field)<br>**type-wall** (strong, emits fragments)<br>**glyph-sphere** (strong, emits solid-form)<br>**structural-decay** (canonical, emits fragments) |
+| `fragments` | **shockwave** (canonical, emits space)<br>**implosion** (canonical, emits void)<br>**cursor-vortex** (canonical, emits void)<br>**letter-fragmentation** (canonical, emits fragments)<br>**structural-decay** (canonical, emits fragments) |
 | `letterform` | **giant-word** (strong, emits letterform)<br>**letter-fragmentation** (canonical, emits fragments)<br>**mask** (support, emits letterform)<br>**spatial-fold** (strong, emits space) |
 | `solid-form` | **density-dissolve** (canonical, emits field)<br>**contour-migration** (strong, emits solid-form)<br>**implosion** (canonical, emits void)<br>**type-wall** (strong, emits fragments) |
-| `geometry` | **spatial-fold** (strong, emits space)<br>**glyph-sphere** (strong, emits solid-form)<br>**tunnel** (strong, emits space) |
-| `space` | **type-wall** (strong, emits fragments)<br>**tunnel** (strong, emits space)<br>**spatial-fold** (strong, emits space)<br>**glyph-sphere** (strong, emits solid-form) |
+| `space` | **type-wall** (strong, emits fragments)<br>**tunnel** (strong, emits space)<br>**spatial-fold** (strong, emits space)<br>**glyph-sphere** (strong, emits solid-form)<br>**structural-decay** (canonical, emits fragments) |
 | `cliche` | **boot-signal** (strong, emits letterform) |
 
-`geometry` and `particles` are **orphan forms**: they are declared as keys with
-legal successors, but no mechanism in the current table emits them (every
-emitter produces `letterform`, `solid-form`, `field`, `fragments`, `space`,
-`void` or `cliche`). They are the extension points for a future mechanism that
-builds geometry or emits a particle state; `FORM_SUCCESSORS.geometry` exists so
-that such a mechanism has somewhere legal to go the day it is added.
+**`structural-decay` was unreachable until v3.0.1.** It emits `fragments` but was
+listed in no successor row, so the planner could never select a canonical-tier
+mechanism as a middle beat, and an automatically planned chain could not exceed
+9 of the 16 usable mechanisms. It is now a legal successor of `field`,
+`fragments` and `space` — the forms that can build a typographic environment for
+it to decay. A full 16-mechanism chain is now reachable and `planChain` can honour
+counts up to 11.
+
+`void` and `field` are **entry-only forms**: declared as keys with legal
+successors, and legal `startForm` values for `reference` analysis, but emitted by
+no mechanism. `cliche` is likewise never entered by the planner — it exists so a
+rejected mechanism has exactly one recovery route rather than being a dead end.
+All three are intentional, not orphans.
 
 `review()` accepts a transition when **either** rule passes:
 

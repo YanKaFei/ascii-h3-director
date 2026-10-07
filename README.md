@@ -79,7 +79,7 @@ ascii-h3-director v3.0.0
 [ok] glyph atlas                  5×9 bitmap font, printable ASCII
 [ok] mechanisms                   21 mechanisms in the grammar
 [ok] png encoder                  built-in, no image library required
-[ok] render smoke test            376 cells in 4ms
+[ok] render smoke test            N cells in Mms
 [ok] quality gate                 score 100/100
 [ok] mmx-cli (paid generation)    not installed — optional; install with: npm i -g mmx-cli
 
@@ -93,35 +93,64 @@ LOOK       brutalist-digital / brutalist / high-impact
 HERO TEXT  —
 
 TRANSFORMATION CHAIN
-   1. 0–3s       Assemble from Sparse Field  [canonical]
-      characters converge along their own velocity vectors until a solid form snaps into legibility
+   1. 0–3s       Density Dissolve  [canonical]
+      the form dematerialises because its glyph ramp slides toward emptiness while its silhouette holds
+      exit → form=field camera=forward-punch-through v=1
+   2. 3–6s       Glyph Sphere  [strong]
+      thousands of characters orbit a tiny focal mark, then all orbits converge
       exit → form=solid-form camera=forward-punch-through v=1
-   2. 3–6s       Typographic Wall  [strong]
+   3. 6–9s       Typographic Wall  [strong]
       the camera punches through each wall without cutting; the wall shatters from the point of impact outward
       exit → form=fragments camera=forward-punch-through v=1
-   ...
+   4. 9–12s      Command Shockwave  [canonical]
+      the release from compression travels outward as a single readable command, dragging microtype in its wake
+      exit → form=space camera=forward-punch-through v=1
+   5. 12–15s     ASCII Tunnel  [strong]
+      the camera travels forward through the rings while they stretch into long perspective trails
+      exit → form=space camera=forward-punch-through v=1
 
 QUALITY GATE  PASS  (100/100)
 ────────────────────────────────────────────────────────────────
   ✔ One legible transformation chain
-      5 beat(s): assemble → type-wall → shockwave → tunnel → glyph-sphere
+      5 beat(s): density-dissolve → glyph-sphere → type-wall → shockwave → tunnel
   ✔ First shot has a clear source state
-      opens on "assemble"
+      opens on "density-dissolve"
   ✔ Every transition has a physical cause
+      all links follow the mechanism grammar
+  ✔ At least 2 strong scale/density contrasts
+      density spans 0.12–0.94 with 9 major swing(s)
+  ✔ Final state is usable as the next clip’s input
+      ends unresolved: the camera is still inside the tunnel with speed left over
+  ✔ Generic HUD / cyberpunk / random glitch excluded
+      no rejected vocabulary in the positive prompt
+  ✔ Prompt stays compact (written for time, not prose)
+      153 words
+
+PROMPT (153 words)
+────────────────────────────────────────────────────────────────
+15-second ultra-wide ASCII kinetic typography sequence.
+
+0–3s: The form dematerialises because its glyph ramp slides toward emptiness while its silhouette holds.
+3–6s: Thousands of characters orbit a tiny focal mark, then all orbits converge.
+6–9s: The camera punches through each wall without cutting; the wall shatters from the point of impact outward.
+9–12s: The release from compression travels outward as a single readable command, dragging microtype in its wake.
+12–15s: The camera travels forward through the rings while they stretch into long perspective trails. The camera is still inside the tunnel with speed left over.
+
+STYLE: brutalist digital palette; brutalist character set; brutalist computational motion design; extreme perspective and scale contrast; monospaced glyphs as physical matter, not overlay; 21:9 frame.
+RULE: no normal cuts; every transformation physically emerges from the previous form; preserve direction, velocity and scale across every transition; avoid generic HUD, cyberpunk city, random glitch, unmotivated particles, smoke wipes, photoreal humans.
 
 $ ascii-h3 preview "a brutalist ASCII tunnel collapsing into a giant word OPEN" --cols 100 --rows 24
-    GG   ##      G ##G GG   G ##G        ##  G       ##
- G C      GC G G    G  C G  G0        C C G G
-  G         C  G    G     GC G               GC   GC
-G      0   CG    C     C0  000   GG               C  C GG  G
-CG      C                 8   8 C   G GGGG C  GC        C G
- CC        C     C   #####8 ##8#G########   C           0
-C    G    ################8 ##8# ########## ######## GG   C
-         ############    G8   8     G    ## #########   G G
-  ... (24 rows of deterministic glyphs)
+                                  t C                             C
+   C                                                                                     C     C
+  C        t t     C                 t                             CC                            C
+  C C                                 C         C                t
+ t      C               t            C                                  GC      t    t
+         C          C00CC  C    8 C G   0CCC G   CCCC  C    C    CCG t   C  C     C 0CC0CtC    0  C
+  0  C      C  Ct G   CC  C  01G08   C Ct 00000 C C0 0C  C CCCG C0C  C  CC  C   0 G C   0     C 1G
+  ... (24 行确定性字形)
 
 $ ascii-h3 strip "brutalist ASCII tunnel into giant word OPEN" --frames 6 --out sheet.png
-wrote sheet.png (6 frames, 600×1788)
+wrote sheet.png (6 frames, 3×2, 1840×592)
 ```
 
 把 `--cols/--rows` 调小可以先在终端里构图，再放大出图；`--out` 换成 `.svg` 就得到矢量印样。
@@ -189,7 +218,7 @@ mmx video generate --model MiniMax-H3 --prompt "$(cat prompt.txt)" \
 | reject | `reject-particles` | Unmotivated Particles | `cliche` |
 | reject | `reject-smoke` | Smoke / Liquid Wipe | `cliche` |
 
-`reject` 层故意留在语法库里——审查器需要能**说出**失败的名字，而不是只说"不好"。合法后继由 `FORM_SUCCESSORS` 决定，例如 `solid-form → density-dissolve | contour-migration | implosion | type-wall`，`space → type-wall | tunnel | spatial-fold | glyph-sphere`。
+`reject` 层故意留在语法库里——审查器需要能**说出**失败的名字，而不是只说"不好"。合法后继由 `FORM_SUCCESSORS` 决定，例如 `solid-form → density-dissolve | contour-migration | implosion | type-wall`，`space → type-wall | tunnel | spatial-fold | glyph-sphere | structural-decay`。
 
 ### 连续性契约
 
@@ -362,7 +391,7 @@ ascii-h3-director v3.0.0
 [ok] glyph atlas                  5×9 bitmap font, printable ASCII
 [ok] mechanisms                   21 mechanisms in the grammar
 [ok] png encoder                  built-in, no image library required
-[ok] render smoke test            376 cells in 4ms
+[ok] render smoke test            N cells in Mms
 [ok] quality gate                 score 100/100
 [ok] mmx-cli (paid generation)    not installed — optional; install with: npm i -g mmx-cli
 
@@ -376,35 +405,64 @@ LOOK       brutalist-digital / brutalist / high-impact
 HERO TEXT  —
 
 TRANSFORMATION CHAIN
-   1. 0–3s       Assemble from Sparse Field  [canonical]
-      characters converge along their own velocity vectors until a solid form snaps into legibility
+   1. 0–3s       Density Dissolve  [canonical]
+      the form dematerialises because its glyph ramp slides toward emptiness while its silhouette holds
+      exit → form=field camera=forward-punch-through v=1
+   2. 3–6s       Glyph Sphere  [strong]
+      thousands of characters orbit a tiny focal mark, then all orbits converge
       exit → form=solid-form camera=forward-punch-through v=1
-   2. 3–6s       Typographic Wall  [strong]
+   3. 6–9s       Typographic Wall  [strong]
       the camera punches through each wall without cutting; the wall shatters from the point of impact outward
       exit → form=fragments camera=forward-punch-through v=1
-   ...
+   4. 9–12s      Command Shockwave  [canonical]
+      the release from compression travels outward as a single readable command, dragging microtype in its wake
+      exit → form=space camera=forward-punch-through v=1
+   5. 12–15s     ASCII Tunnel  [strong]
+      the camera travels forward through the rings while they stretch into long perspective trails
+      exit → form=space camera=forward-punch-through v=1
 
 QUALITY GATE  PASS  (100/100)
 ────────────────────────────────────────────────────────────────
   ✔ One legible transformation chain
-      5 beat(s): assemble → type-wall → shockwave → tunnel → glyph-sphere
+      5 beat(s): density-dissolve → glyph-sphere → type-wall → shockwave → tunnel
   ✔ First shot has a clear source state
-      opens on "assemble"
+      opens on "density-dissolve"
   ✔ Every transition has a physical cause
+      all links follow the mechanism grammar
+  ✔ At least 2 strong scale/density contrasts
+      density spans 0.12–0.94 with 9 major swing(s)
+  ✔ Final state is usable as the next clip’s input
+      ends unresolved: the camera is still inside the tunnel with speed left over
+  ✔ Generic HUD / cyberpunk / random glitch excluded
+      no rejected vocabulary in the positive prompt
+  ✔ Prompt stays compact (written for time, not prose)
+      153 words
+
+PROMPT (153 words)
+────────────────────────────────────────────────────────────────
+15-second ultra-wide ASCII kinetic typography sequence.
+
+0–3s: The form dematerialises because its glyph ramp slides toward emptiness while its silhouette holds.
+3–6s: Thousands of characters orbit a tiny focal mark, then all orbits converge.
+6–9s: The camera punches through each wall without cutting; the wall shatters from the point of impact outward.
+9–12s: The release from compression travels outward as a single readable command, dragging microtype in its wake.
+12–15s: The camera travels forward through the rings while they stretch into long perspective trails. The camera is still inside the tunnel with speed left over.
+
+STYLE: brutalist digital palette; brutalist character set; brutalist computational motion design; extreme perspective and scale contrast; monospaced glyphs as physical matter, not overlay; 21:9 frame.
+RULE: no normal cuts; every transformation physically emerges from the previous form; preserve direction, velocity and scale across every transition; avoid generic HUD, cyberpunk city, random glitch, unmotivated particles, smoke wipes, photoreal humans.
 
 $ ascii-h3 preview "a brutalist ASCII tunnel collapsing into a giant word OPEN" --cols 100 --rows 24
-    GG   ##      G ##G GG   G ##G        ##  G       ##
- G C      GC G G    G  C G  G0        C C G G
-  G         C  G    G     GC G               GC   GC
-G      0   CG    C     C0  000   GG               C  C GG  G
-CG      C                 8   8 C   G GGGG C  GC        C G
- CC        C     C   #####8 ##8#G########   C           0
-C    G    ################8 ##8# ########## ######## GG   C
-         ############    G8   8     G    ## #########   G G
-  ... （24 行の決定論的なグリフ）
+                                  t C                             C
+   C                                                                                     C     C
+  C        t t     C                 t                             CC                            C
+  C C                                 C         C                t
+ t      C               t            C                                  GC      t    t
+         C          C00CC  C    8 C G   0CCC G   CCCC  C    C    CCG t   C  C     C 0CC0CtC    0  C
+  0  C      C  Ct G   CC  C  01G08   C Ct 00000 C C0 0C  C CCCG C0C  C  CC  C   0 G C   0     C 1G
+  ... (24 行の決定論的なグリフ)
 
 $ ascii-h3 strip "brutalist ASCII tunnel into giant word OPEN" --frames 6 --out sheet.png
-wrote sheet.png (6 frames, 600×1788)
+wrote sheet.png (6 frames, 3×2, 1840×592)
 ```
 
 `--cols/--rows` を小さくすれば端末で構図を確認でき、`--out` を `.svg` にすればベクターのシートになります。
@@ -472,7 +530,7 @@ mmx video generate --model MiniMax-H3 --prompt "$(cat prompt.txt)" \
 | reject | `reject-particles` | Unmotivated Particles | `cliche` |
 | reject | `reject-smoke` | Smoke / Liquid Wipe | `cliche` |
 
-`reject` 階層はあえて文法に残しています。レビュアーが失敗に**名前を与えられる**必要があるからです。合法な後続は `FORM_SUCCESSORS` が決めます（例：`solid-form → density-dissolve | contour-migration | implosion | type-wall`、`space → type-wall | tunnel | spatial-fold | glyph-sphere`）。
+`reject` 階層はあえて文法に残しています。レビュアーが失敗に**名前を与えられる**必要があるからです。合法な後続は `FORM_SUCCESSORS` が決めます（例：`solid-form → density-dissolve | contour-migration | implosion | type-wall`、`space → type-wall | tunnel | spatial-fold | glyph-sphere | structural-decay`）。
 
 ### 連続性契約
 
@@ -645,7 +703,7 @@ ascii-h3-director v3.0.0
 [ok] glyph atlas                  5×9 bitmap font, printable ASCII
 [ok] mechanisms                   21 mechanisms in the grammar
 [ok] png encoder                  built-in, no image library required
-[ok] render smoke test            376 cells in 4ms
+[ok] render smoke test            N cells in Mms
 [ok] quality gate                 score 100/100
 [ok] mmx-cli (paid generation)    not installed — optional; install with: npm i -g mmx-cli
 
@@ -659,35 +717,64 @@ LOOK       brutalist-digital / brutalist / high-impact
 HERO TEXT  —
 
 TRANSFORMATION CHAIN
-   1. 0–3s       Assemble from Sparse Field  [canonical]
-      characters converge along their own velocity vectors until a solid form snaps into legibility
+   1. 0–3s       Density Dissolve  [canonical]
+      the form dematerialises because its glyph ramp slides toward emptiness while its silhouette holds
+      exit → form=field camera=forward-punch-through v=1
+   2. 3–6s       Glyph Sphere  [strong]
+      thousands of characters orbit a tiny focal mark, then all orbits converge
       exit → form=solid-form camera=forward-punch-through v=1
-   2. 3–6s       Typographic Wall  [strong]
+   3. 6–9s       Typographic Wall  [strong]
       the camera punches through each wall without cutting; the wall shatters from the point of impact outward
       exit → form=fragments camera=forward-punch-through v=1
-   ...
+   4. 9–12s      Command Shockwave  [canonical]
+      the release from compression travels outward as a single readable command, dragging microtype in its wake
+      exit → form=space camera=forward-punch-through v=1
+   5. 12–15s     ASCII Tunnel  [strong]
+      the camera travels forward through the rings while they stretch into long perspective trails
+      exit → form=space camera=forward-punch-through v=1
 
 QUALITY GATE  PASS  (100/100)
 ────────────────────────────────────────────────────────────────
   ✔ One legible transformation chain
-      5 beat(s): assemble → type-wall → shockwave → tunnel → glyph-sphere
+      5 beat(s): density-dissolve → glyph-sphere → type-wall → shockwave → tunnel
   ✔ First shot has a clear source state
-      opens on "assemble"
+      opens on "density-dissolve"
   ✔ Every transition has a physical cause
+      all links follow the mechanism grammar
+  ✔ At least 2 strong scale/density contrasts
+      density spans 0.12–0.94 with 9 major swing(s)
+  ✔ Final state is usable as the next clip’s input
+      ends unresolved: the camera is still inside the tunnel with speed left over
+  ✔ Generic HUD / cyberpunk / random glitch excluded
+      no rejected vocabulary in the positive prompt
+  ✔ Prompt stays compact (written for time, not prose)
+      153 words
+
+PROMPT (153 words)
+────────────────────────────────────────────────────────────────
+15-second ultra-wide ASCII kinetic typography sequence.
+
+0–3s: The form dematerialises because its glyph ramp slides toward emptiness while its silhouette holds.
+3–6s: Thousands of characters orbit a tiny focal mark, then all orbits converge.
+6–9s: The camera punches through each wall without cutting; the wall shatters from the point of impact outward.
+9–12s: The release from compression travels outward as a single readable command, dragging microtype in its wake.
+12–15s: The camera travels forward through the rings while they stretch into long perspective trails. The camera is still inside the tunnel with speed left over.
+
+STYLE: brutalist digital palette; brutalist character set; brutalist computational motion design; extreme perspective and scale contrast; monospaced glyphs as physical matter, not overlay; 21:9 frame.
+RULE: no normal cuts; every transformation physically emerges from the previous form; preserve direction, velocity and scale across every transition; avoid generic HUD, cyberpunk city, random glitch, unmotivated particles, smoke wipes, photoreal humans.
 
 $ ascii-h3 preview "a brutalist ASCII tunnel collapsing into a giant word OPEN" --cols 100 --rows 24
-    GG   ##      G ##G GG   G ##G        ##  G       ##
- G C      GC G G    G  C G  G0        C C G G
-  G         C  G    G     GC G               GC   GC
-G      0   CG    C     C0  000   GG               C  C GG  G
-CG      C                 8   8 C   G GGGG C  GC        C G
- CC        C     C   #####8 ##8#G########   C           0
-C    G    ################8 ##8# ########## ######## GG   C
-         ############    G8   8     G    ## #########   G G
+                                  t C                             C
+   C                                                                                     C     C
+  C        t t     C                 t                             CC                            C
+  C C                                 C         C                t
+ t      C               t            C                                  GC      t    t
+         C          C00CC  C    8 C G   0CCC G   CCCC  C    C    CCG t   C  C     C 0CC0CtC    0  C
+  0  C      C  Ct G   CC  C  01G08   C Ct 00000 C C0 0C  C CCCG C0C  C  CC  C   0 G C   0     C 1G
   ... (24 rows of deterministic glyphs)
 
 $ ascii-h3 strip "brutalist ASCII tunnel into giant word OPEN" --frames 6 --out sheet.png
-wrote sheet.png (6 frames, 600×1788)
+wrote sheet.png (6 frames, 3×2, 1840×592)
 ```
 
 Drop `--cols/--rows` to compose in the terminal first, then raise them for the final image; point `--out` at a `.svg` to get a vector sheet.
@@ -755,7 +842,7 @@ A clip is not a style; it is a **transformation chain**. Characters change funct
 | reject | `reject-particles` | Unmotivated Particles | `cliche` |
 | reject | `reject-smoke` | Smoke / Liquid Wipe | `cliche` |
 
-The `reject` tier stays in the grammar on purpose: the reviewer has to be able to **name** a failure, not just call it weak. Legal successors come from `FORM_SUCCESSORS` — for example `solid-form → density-dissolve | contour-migration | implosion | type-wall`, and `space → type-wall | tunnel | spatial-fold | glyph-sphere`.
+The `reject` tier stays in the grammar on purpose: the reviewer has to be able to **name** a failure, not just call it weak. Legal successors come from `FORM_SUCCESSORS` — for example `solid-form → density-dissolve | contour-migration | implosion | type-wall`, and `space → type-wall | tunnel | spatial-fold | glyph-sphere | structural-decay`.
 
 ### The continuity contract
 

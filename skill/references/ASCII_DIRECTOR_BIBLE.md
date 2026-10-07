@@ -32,15 +32,49 @@ typography  →  fragments
 fragments   →  symbol / cursor / void
 ```
 
-Every mechanism in `src/motion-grammar.js` is one such transformation, tagged
-with the form it consumes and the form it emits. A chain is legal when each
-mechanism's consumed form is the previous mechanism's emitted form. That is the
-whole structure, and `planChain` walks it mechanically.
+Every mechanism in `src/motion-grammar.js` is one such transformation, written as
+*material → action → emitted form*. A chain is legal when the previous
+mechanism's emitted **form** is admitted by the next one — either the
+predecessor's emitted form appears as a key in `FORM_SUCCESSORS` with the
+successor in its list, or the predecessor declares the successor in `chainsTo`.
+That is the whole structure, and `planChain` walks it mechanically. The full
+table is in `MOTION_GRAMMAR.md` §4.
 
 **Use inherited motion.** A symbol can stretch into a tunnel because the camera
 is *already* moving into it. A typographic wall can fragment because the camera
 *punches through* it. A sphere can implode because its orbits are *already*
 converging. The cause precedes the effect and stays visible in the frame.
+
+### The four tiers
+
+Tier is a statement about structural weight, not about quality. It decides what
+the planner reaches for first and how much a beat can carry on its own.
+
+| tier | count | what it is | examples |
+| --- | --- | --- | --- |
+| **canonical** | 7 | load-bearing transformation; the film does not exist without events like these | `assemble`, `implosion`, `shockwave`, `cursor-vortex` |
+| **strong** | 7 | a high-impact event that carries a beat alone: a punch-through, a scale inversion, a fold | `tunnel`, `type-wall`, `giant-word`, `spatial-fold` |
+| **support** | 2 | material that carries motion handed to it; it never causes a transformation | `field`, `mask` |
+| **reject** | 5 | a named failure mode, kept in the grammar so the gate can name it | `reject-city`, `reject-hud` |
+
+The reject tier is not a graveyard, it is a **diagnostic vocabulary**. Five named
+failures (`reject-hud`, `reject-city`, `reject-glitch`, `reject-particles`,
+`reject-smoke`) let the gate say *which* cliché appeared instead of reporting a
+vague unease, and let the `RULE:` line ban a finite, reviewable set. Each one is
+terminal — `chainsTo: []`, `emits: 'cliche'` — and `FORM_SUCCESSORS.cliche`
+contains exactly one mechanism, `boot-signal`: the only way back into the grammar
+from a cliché is to start again from a single mark.
+
+### The formalism, in one paragraph
+
+A clip is a chain of links. Each link is
+`{ mechanism, beat, from, to, exit, description }`, where `exit` is a full
+`MotionState` whose `form` is the mechanism's `emits` and whose `unresolved` is
+that mechanism's own sentence ("the camera is still inside the tunnel with speed
+left over"). The chain is planned by `planChain`, reviewed by `review`, and
+rendered by `planFilm` — one shot per link, lazily compiled to point primitives.
+Nothing about the chain is stochastic: the same options always return the same
+chain, and the same chain always renders byte-identical frames.
 
 ## 3. Rhythm grammar
 
@@ -135,15 +169,90 @@ A clip must expose an `exit_state`:
 | `ramp` | the dominant charset |
 | `unresolved` | the action still in flight when the clip ends |
 
-The next clip's `entry_state` must match it. `inherit()` derives that entry state
-from the predecessor's exit state, and `checkSeam()` reports concrete violations —
-a camera reset, a palette jump, a dropped or reversed velocity — rather than a
-feeling that something is off.
+The next clip's `entry_state` must match it. `inherit(prevExit)` derives that
+entry state from the predecessor's exit state: it carries `form`, `camera`,
+`rotation`, `scaleTrend`, `densityTrend`, `palette` and `ramp` across unchanged,
+multiplies `velocity` by `speedUp` (1.1 by default, so a sequel accelerates
+instead of restarting), and carries the `unresolved` action into the entry state
+so the continuation knows what it is closing. `checkSeam(prevExit, entry,
+{ requireCamera: true, requirePalette: true })` then reports concrete violations
+— a camera reset, a palette or charset jump, a dropped or reversed velocity —
+rather than a feeling that something is off. Each violation is a sentence you
+can act on:
+
+```
+camera vector resets: predecessor exits on "tunnel-travel" but the continuation enters on "orbital-lock"
+apparent velocity is dropped to zero, which reads as a hard reset
+palette changes across the seam ("brutalist-digital" → "phosphor"), which breaks material continuity
+dominant charset changes across the seam ("brutalist" → "minimal")
+```
+
+Camera, palette and charset are only compared when the caller says the entry was
+*derived* from the exit (`requireCamera` / `requirePalette`), because two
+independently built states may legitimately differ; velocity is always checked,
+because a velocity break reads as a reset in any cut. `MOTION_GRAMMAR.md` §6 has
+the worked example and the workings of `inherit()`.
 
 **The ending is the deliverable.** A clip that resolves completely cannot be
-continued, and a sequence assembled from resolved clips is a slideshow.
+continued, and a sequence assembled from resolved clips is a slideshow. The gate
+enforces this as check 5: the last link must leave a non-empty `unresolved`
+action, or the prompt must declare that the clip ends mid-motion.
 
-## 9. The single test
+## 9. See it before you pay for it
+
+The v3 engine renders the plan itself. A `FilmSpec` is data — one shot per chain
+link, each shot a set of seeded primitive *specs* compiled lazily at render time
+— so any frame of any beat can be rasterized offline, in milliseconds, with no
+API key, no ffmpeg and no network:
+
+```bash
+ascii-h3 preview "15s ASCII film about memory collapsing, word VOID" --t 9 --cols 110 --rows 28
+ascii-h3 strip   "<the same brief>" --frames 6 --out sheet.png     # a contact sheet
+ascii-h3 svg     "<the same brief>" --t 9 --out frame.svg          # real glyph outlines, no font
+ascii-h3 png     "<the same brief>" --t 9 --out frame.png          # encoder built in
+```
+
+The renderer is a pinhole camera flying through a character point cloud: cells
+hold one ASCII code point and one ink value, nothing else. It uses no
+`Math.random` and reads no wall clock, so re-rendering the same spec produces
+byte-identical frames — which is what makes a preview *evidence* rather than an
+impression. `node test/engine.test.js` asserts this directly.
+
+Two consequences for direction:
+
+- **You cannot discover that a beat reads badly by paying for it.** Look at the
+  beat. If a beat is unreadable at 110×28 characters, it will be unreadable at
+  any resolution, because legibility here is a property of the glyph mass, not of
+  the pixel count.
+- **The preview is the argument, not the decoration.** Show the contact sheet
+  when you report a plan. A chain plus a gate score plus a sheet is a decision;
+  prose about the plan is not.
+
+## 10. The quality gate
+
+Seven checks, equal weight, scored 0–100, and `pass` only when all seven pass.
+The gate is the only thing standing between a direction and a paid generation,
+and every check is structural — which is why a failing gate can only be repaired
+structurally. **Fix, do not decorate.**
+
+| # | check | asks |
+| --- | --- | --- |
+| 1 | `single-chain` | is there one legible transformation chain of ≥ 3 beats? |
+| 2 | `source-state` | does the first shot have a clear source state? |
+| 3 | `physical-cause` | does every transition legally follow the previous form? |
+| 4 | `contrast` | are there at least 2 strong scale/density contrasts? |
+| 5 | `exit-state` | is the final state usable as the next clip's input? |
+| 6 | `no-cliche` | is the rejected vocabulary absent from the positive prompt? |
+| 7 | `compact` | is the prompt written for time rather than as prose? |
+
+Run it with `node src/cli.js review "<brief>"`, or read it inside a full plan
+(`node src/cli.js plan "<brief>"`). Check 7's
+320-word ceiling is the prototype lesson: the first continuation prompt grew
+until it was explicitly rejected, because a prompt that needs 500 words to
+describe 15 seconds is not describing one film. `QUALITY_GATE.md` documents each
+check with its failure mode, its repair, and a worked failing plan.
+
+## 11. The single test
 
 If a 15-second plan cannot be summarised as **one** transformation chain, it is
 too diffuse. Cut it.

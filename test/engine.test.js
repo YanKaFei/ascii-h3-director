@@ -356,7 +356,7 @@ test('grammar: planChain never repeats a mechanism in ordinary planning', () => 
   return `${plans} plans, zero repeats`;
 });
 
-test('grammar: planChain({count:n}) returns exactly n links', () => {
+test('grammar: planChain returns n links, or fewer once the grammar runs out', () => {
   for (const count of [1, 2, 3, 4, 5, 6, 7, 8, 10, 12]) {
     for (const startForm of Object.keys(FORM_SUCCESSORS)) {
       const chain = planChain({ startForm, count });
@@ -979,6 +979,69 @@ test('cli: reference, continue and preview all work offline', () => {
   } finally {
     rmSync(tmp, { recursive: true, force: true });
   }
+});
+
+/* ------------------------------------------------------------------ *
+ * 9. Coverage of the parts a preview depends on
+ * ------------------------------------------------------------------ */
+
+test('render: each non-rejected mechanism renders a non-empty frame', () => {
+  const rendered = [];
+  for (const m of MECHANISMS) {
+    if (m.tier === 'reject') continue;
+    // One beat, opened freely on this mechanism (the first beat of a chain is
+    // chosen from the pool, so this also proves the pool admits every tier).
+    const s = buildScript({ chain: planChain({ startForm: 'void', count: 1, allow: [m.id] }) });
+    const f = planFilm(s);
+    eq(f.shots[0].mechanism, m.id, `allow:[${m.id}] did not open on it`);
+    const grid = renderFilmFrame(f, f.duration / 2, { cols: 60, rows: 16 });
+    ok(grid.stats().filled > 0, `mechanism "${m.id}" rendered an empty frame`);
+    rendered.push(m.id);
+  }
+  eq(rendered.length, MECHANISMS.filter((m) => m.tier !== 'reject').length,
+    'not every usable mechanism was rendered');
+  return `${rendered.length} mechanisms render`;
+});
+
+test('render: hero text lands only on beats that can carry it', () => {
+  const f = film({ heroText: ['VOID', 'MEMORY'] });
+  const carriers = new Set(['giant-word', 'type-wall', 'letter-fragmentation', 'mask', 'shockwave']);
+  const withHero = f.shots.filter((s) => s.hero);
+  ok(withHero.length > 0, 'hero text was dropped entirely');
+  for (const s of withHero) {
+    ok(carriers.has(s.mechanism),
+      `mechanism "${s.mechanism}" was handed hero text it cannot hold`);
+  }
+  eq(film({ heroText: [] }).shots.filter((s) => s.hero).length, 0,
+    'hero text appeared without being requested');
+  return `${withHero.length} carrier beat(s): ${withHero.map((s) => `${s.mechanism}=${s.hero}`).join(', ')}`;
+});
+
+test('render: every declared palette resolves and blends in range', () => {
+  for (const name of Object.keys(PALETTES)) {
+    const pal = paletteFor(name);
+    deepEq(pal, PALETTES[name], `paletteFor("${name}") did not return the declared palette`);
+    ok(pal.layers.length >= 2, `palette "${name}" has fewer than two layers`);
+    for (let layer = 0; layer < pal.layers.length; layer++) {
+      const rgb = inkColor(pal, { layer, weight: 1 });
+      eq(rgb.length, 3, 'inkColor did not return an RGB triple');
+      for (const v of rgb) ok(Number.isInteger(v) && v >= 0 && v <= 255, `channel ${v} out of range`);
+    }
+  }
+  deepEq(paletteFor('does-not-exist'), PALETTES['brutalist-digital'],
+    'an unknown palette should fall back to brutalist-digital');
+  return `${Object.keys(PALETTES).length} palettes resolve`;
+});
+
+test('cli: an unknown command exits non-zero', () => {
+  let status = 0;
+  try {
+    execFileSync(process.execPath, [CLI, 'not-a-command'], { encoding: 'utf8', stdio: 'pipe' });
+  } catch (err) {
+    status = err.status;
+  }
+  eq(status, 2, 'an unknown command should exit 2');
+  return 'unknown command exits 2';
 });
 
 /* ------------------------------------------------------------------ *
