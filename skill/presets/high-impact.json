@@ -1,0 +1,26 @@
+{
+  "name": "high-impact",
+  "description": "Maximum perceptual contrast. A major scale or density inversion every 2–3 seconds. Use for title sequences, music-video inserts and social cuts.",
+  "duration": 15,
+  "ratio": "21:9",
+  "mode": "high-impact",
+  "palette": "brutalist-digital",
+  "ramp": "brutalist",
+  "beats": 5,
+  "heroTextMaxWords": 2,
+  "rules": {
+    "normal_cuts": false,
+    "inherit_motion": true,
+    "major_scale_change_seconds": 3,
+    "end_unresolved": true,
+    "min_scale_inversions": 2
+  },
+  "preferredMechanisms": [
+    "assemble", "type-wall", "shockwave", "tunnel", "glyph-sphere",
+    "implosion", "giant-word", "cursor-vortex", "letter-fragmentation"
+  ],
+  "avoid": [
+    "generic HUD", "cyberpunk city", "random glitch",
+    "unmotivated particles", "smoke wipes", "photoreal humans"
+  ]
+}

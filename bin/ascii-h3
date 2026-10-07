@@ -1,0 +1,13 @@
+#!/usr/bin/env node
+/**
+ * ascii-h3 — executable shim for the plugin's command surface.
+ * Resolves the engine relative to this file so the command works from any cwd.
+ */
+import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
+import { run } from '../src/cli.js';
+
+const here = fileURLToPath(import.meta.url);
+void here;
+void resolve;
+process.exit(run(process.argv.slice(2)));

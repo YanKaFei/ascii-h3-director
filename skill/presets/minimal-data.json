@@ -1,0 +1,26 @@
+{
+  "name": "minimal-data",
+  "description": "Restrained and typographic. Space is the material; silence is a beat. Use for documentary inserts, title cards and gallery loops.",
+  "duration": 15,
+  "ratio": "21:9",
+  "mode": "minimal-data",
+  "palette": "minimal-signal",
+  "ramp": "minimal",
+  "beats": 4,
+  "heroTextMaxWords": 1,
+  "rules": {
+    "normal_cuts": false,
+    "inherit_motion": true,
+    "silence_space": "high",
+    "density": "controlled",
+    "end_unresolved": true
+  },
+  "preferredMechanisms": [
+    "boot-signal", "assemble", "density-dissolve", "contour-migration",
+    "mask", "field", "letter-fragmentation"
+  ],
+  "avoid": [
+    "generic HUD", "cyberpunk city", "random glitch",
+    "unmotivated particles", "smoke wipes", "photoreal humans"
+  ]
+}

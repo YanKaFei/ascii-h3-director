@@ -1,0 +1,33 @@
+{
+  "duration": 14,
+  "aspect": "21:9",
+  "materials": [
+    "monospaced glyphs",
+    "mathematical operators",
+    "brackets and slashes",
+    "a single blinking cursor",
+    "microtype fragments"
+  ],
+  "camera": [
+    "forward punch-through along +z",
+    "rapid scale dive into a focal glyph",
+    "slight roll during the tunnel travel"
+  ],
+  "densityCurve": "three compressed peaks at roughly 0s, 6s and 12s, each released into near-empty field within 1.5s",
+  "typography": "one cropped hero word per peak, never more than 5 characters, always larger than frame",
+  "transitions": [
+    "assemble from sparse field",
+    "ASCII tunnel",
+    "typographic wall",
+    "glyph sphere",
+    "implosion",
+    "cursor vortex"
+  ],
+  "ending": "mid-dive into a cursor-shaped drain, with the camera still accelerating",
+  "notes": [
+    "no cut is visible anywhere in the reference",
+    "every transition is caused by the camera reaching the previous form",
+    "the palette never changes: white structure, one green data layer, one red focal mark",
+    "audio is sparse clicks and sub impacts, not music"
+  ]
+}

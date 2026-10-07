@@ -1,0 +1,80 @@
+{
+  "name": "@yankafei/ascii-h3-director",
+  "version": "3.0.0",
+  "description": "Direct ASCII art and kinetic-typography films with MiniMax H3 — deterministic zero-dependency preview engine, motion-grammar chain planning, seam-checked continuation, and a Director Console for DeepSeek Harness.",
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "cordis",
+    "ascii",
+    "ascii-art",
+    "kinetic-typography",
+    "ai-video",
+    "text-art",
+    "minimax",
+    "agent-skill"
+  ],
+  "license": "MIT",
+  "author": "SaltCoffee <https://github.com/YanKaFei>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YanKaFei/ascii-h3-director.git"
+  },
+  "homepage": "https://github.com/YanKaFei/ascii-h3-director#readme",
+  "bugs": {
+    "url": "https://github.com/YanKaFei/ascii-h3-director/issues"
+  },
+  "type": "module",
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./client": "./src/client.js",
+    "./cli": "./src/cli.js",
+    "./engine": "./src/renderer.js",
+    "./director": "./src/director.js",
+    "./grammar": "./src/motion-grammar.js",
+    "./package.json": "./package.json",
+    "./locale/*.json": "./locale/*.json"
+  },
+  "bin": {
+    "ascii-h3": "./bin/ascii-h3"
+  },
+  "files": [
+    "src/",
+    "bin/",
+    "skill/",
+    "locale/",
+    "cordis.patch.yml",
+    "icon.svg",
+    "README.md",
+    "LICENSE"
+  ],
+  "icon": "./icon.svg",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "@deepseek-ai/cordis": ">=4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/cordis": {
+      "optional": true
+    }
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": []
+    }
+  },
+  "scripts": {
+    "doctor": "node src/cli.js doctor",
+    "test": "node test/engine.test.js",
+    "demo": "node src/cli.js plan \"a 15 second ASCII film about memory collapsing into language\""
+  }
+}

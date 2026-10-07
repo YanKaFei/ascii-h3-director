@@ -1,0 +1,24 @@
+{
+  "name": "monolith-type",
+  "description": "Pure black and white structural typography. Type is architecture; the camera travels through it. Use for manifestos and brand statements.",
+  "duration": 12,
+  "ratio": "21:9",
+  "mode": "high-impact",
+  "palette": "monolith",
+  "ramp": "typographic",
+  "beats": 4,
+  "heroTextMaxWords": 1,
+  "rules": {
+    "normal_cuts": false,
+    "inherit_motion": true,
+    "major_scale_change_seconds": 3,
+    "end_unresolved": true
+  },
+  "preferredMechanisms": [
+    "giant-word", "type-wall", "spatial-fold", "letter-fragmentation", "mask"
+  ],
+  "avoid": [
+    "generic HUD", "cyberpunk city", "random glitch",
+    "unmotivated particles", "colour", "photoreal humans"
+  ]
+}

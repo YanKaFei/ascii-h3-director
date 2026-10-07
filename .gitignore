@@ -1,0 +1,25 @@
+# engine output
+.ascii-h3/
+outputs/
+*.mp4
+*.mov
+!assets/*.png
+
+# poster generator scratch
+.poster-tmp/
+
+# node
+node_modules/
+npm-debug.log*
+pnpm-debug.log*
+yarn-error.log*
+
+# editors and OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# secrets — never commit a provider key
+.env
+.env.*

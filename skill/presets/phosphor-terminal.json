@@ -1,0 +1,25 @@
+{
+  "name": "phosphor-terminal",
+  "description": "Green phosphor CRT vocabulary. Boot signals, boot ramps and cursor drains. Use for computational and archival subjects.",
+  "duration": 15,
+  "ratio": "16:9",
+  "mode": "high-impact",
+  "palette": "phosphor",
+  "ramp": "phosphor",
+  "beats": 5,
+  "heroTextMaxWords": 2,
+  "rules": {
+    "normal_cuts": false,
+    "inherit_motion": true,
+    "major_scale_change_seconds": 3,
+    "end_unresolved": true
+  },
+  "preferredMechanisms": [
+    "boot-signal", "assemble", "tunnel", "density-dissolve",
+    "cursor-vortex", "structural-decay"
+  ],
+  "avoid": [
+    "generic HUD", "cyberpunk city", "random glitch",
+    "unmotivated particles", "smoke wipes", "photoreal humans"
+  ]
+}

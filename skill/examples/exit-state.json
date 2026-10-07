@@ -1,0 +1,11 @@
+{
+  "form": "solid-form",
+  "camera": "forward-punch-through",
+  "velocity": 1,
+  "rotation": 0.6,
+  "scaleTrend": -1,
+  "densityTrend": 1,
+  "unresolved": "the orbits are still converging on the focal mark",
+  "palette": "brutalist-digital",
+  "ramp": "brutalist"
+}
