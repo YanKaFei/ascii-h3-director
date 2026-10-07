@@ -13,6 +13,123 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, isAbsolute, resolve } from 'node:path';
 
+/* ------------------------------------------------------------------ *
+ * Config schema — Standard Schema v1, implemented here so the plugin
+ * keeps its zero-dependency property.
+ *
+ * Cordis calls `Config['~standard'].validate(raw)` at activation
+ * (cordis/lib/index.js `resolveConfig`) and treats a throwing validate or a
+ * returned `issues` array as a load error. Implementing the interface
+ * directly means a user gets real validation, defaults and a schema the
+ * Plugin Manager can project, without pulling a dependency into the profile.
+ * ------------------------------------------------------------------ */
+
+/**
+ * @param {Record<string, {type:string, default?:unknown, min?:number, max?:number, step?:number, description?:string}>} fields
+ */
+function objectSchema(fields) {
+  const validate = (raw) => {
+    const input = raw === undefined || raw === null ? {} : raw;
+    if (typeof input !== 'object' || Array.isArray(input)) {
+      return { issues: [{ message: 'config must be an object', path: [] }] };
+    }
+    const value = {};
+    const issues = [];
+    for (const [key, spec] of Object.entries(fields)) {
+      const given = input[key];
+      if (given === undefined) {
+        if (spec.default !== undefined) value[key] = spec.default;
+        continue;
+      }
+      if (spec.type === 'number') {
+        const n = typeof given === 'number' ? given : Number(given);
+        if (!Number.isFinite(n)) {
+          issues.push({ message: `${key} must be a number`, path: [key] });
+          continue;
+        }
+        if (spec.min !== undefined && n < spec.min) {
+          issues.push({ message: `${key} must be >= ${spec.min}`, path: [key] });
+          continue;
+        }
+        if (spec.max !== undefined && n > spec.max) {
+          issues.push({ message: `${key} must be <= ${spec.max}`, path: [key] });
+          continue;
+        }
+        value[key] = n;
+      } else if (spec.type === 'boolean') {
+        if (typeof given !== 'boolean') {
+          issues.push({ message: `${key} must be a boolean`, path: [key] });
+          continue;
+        }
+        value[key] = given;
+      } else if (spec.type === 'string') {
+        if (typeof given !== 'string') {
+          issues.push({ message: `${key} must be a string`, path: [key] });
+          continue;
+        }
+        value[key] = given;
+      } else {
+        value[key] = given;
+      }
+    }
+    // Unknown keys are preserved rather than rejected: a user's own patch layer
+    // may carry forward-compatible options a newer version understands.
+    for (const [key, given] of Object.entries(input)) {
+      if (!(key in fields)) value[key] = given;
+    }
+    if (issues.length) return { issues };
+    return { value };
+  };
+
+  const dict = {};
+  for (const [key, spec] of Object.entries(fields)) {
+    // The Loader reasons about a schema by `.type`, `.dict` and `.meta`
+    // (cordis-plugin-loader `equal`/`isSchemastery`). Providing those, plus the
+    // Standard Schema interface Cordis itself validates through, keeps this
+    // schema usable by both without pretending to be another library.
+    dict[key] = {
+      type: spec.type,
+      meta: {
+        ...(spec.default !== undefined ? { default: spec.default } : {}),
+        ...(spec.description ? { description: spec.description } : {}),
+        ...(spec.min !== undefined ? { min: spec.min } : {}),
+        ...(spec.max !== undefined ? { max: spec.max } : {}),
+      },
+    };
+  }
+
+  return {
+    type: 'object',
+    dict,
+    meta: {},
+    '~standard': {
+      version: 1,
+      // Named for this plugin, not for schemastery: the Loader falls back to
+      // strict raw config comparison for schemas it does not recognise, which
+      // is the correct behaviour for a schema that declares no volatile field.
+      vendor: 'ascii-h3-director',
+      validate,
+    },
+    /** JSON-Schema projection, so `Config.listConfigs` can describe the row. */
+    toJSONSchema() {
+      const properties = {};
+      const required = [];
+      for (const [key, spec] of Object.entries(fields)) {
+        properties[key] = {
+          type: spec.type,
+          ...(spec.description ? { description: spec.description } : {}),
+          ...(spec.default !== undefined ? { default: spec.default } : {}),
+          ...(spec.min !== undefined ? { minimum: spec.min } : {}),
+          ...(spec.max !== undefined ? { maximum: spec.max } : {}),
+        };
+        if (spec.default === undefined) required.push(key);
+      }
+      return { type: 'object', additionalProperties: true, properties, required };
+    },
+    fields,
+  };
+}
+
 import { parseBrief, composePrompt, review, analyzeReference, planContinuation } from './director.js';
 import {
   MECHANISMS, MECHANISM_BY_ID, planChain, checkSeam, exitState,
@@ -28,28 +145,60 @@ export const inject = ['tools', 'systemPrompt'];
  * Config — dependency-free, so the plugin activates in any profile
  * ------------------------------------------------------------------ */
 
-export const Config = {
-  type: 'object',
-  additionalProperties: true,
-  properties: {
-    defaultDuration: { type: 'number', default: 15, description: 'Default clip length in seconds (4–15).' },
-    defaultRatio: { type: 'string', default: '21:9', description: 'Default frame shape.' },
-    defaultPalette: { type: 'string', default: 'brutalist-digital', description: 'Default palette name.' },
-    defaultRamp: { type: 'string', default: 'brutalist', description: 'Default character ramp name.' },
-    outputDir: { type: 'string', default: '.ascii-h3', description: 'Where previews and contact sheets are written.' },
-    enforceGate: { type: 'boolean', default: true, description: 'Refuse paid generation until the quality gate passes.' },
+export const configSchema = objectSchema({
+  defaultDuration: {
+    type: 'number', default: 15, min: 4, max: 15, step: 1,
+    description: 'Default clip length in seconds (4-15).',
   },
-};
+  defaultRatio: {
+    type: 'string', default: '21:9',
+    description: 'Default frame shape: 21:9, 16:9, 9:16, 4:3, 1:1 or adaptive.',
+  },
+  defaultPalette: {
+    type: 'string', default: 'brutalist-digital',
+    description: 'Default palette: brutalist-digital, minimal-signal, phosphor, paper-terminal, monolith.',
+  },
+  defaultRamp: {
+    type: 'string', default: 'brutalist',
+    description: 'Default ramp: brutalist, classic, minimal, operators, binary, data, phosphor, typographic.',
+  },
+  outputDir: {
+    type: 'string', default: '.ascii-h3',
+    description: 'Where previews and contact sheets are written, relative to the workspace.',
+  },
+  enforceGate: {
+    type: 'boolean', default: true,
+    description: 'Refuse paid generation until the quality gate passes.',
+  },
+});
 
+/**
+ * Apply the schema to the row's config. Cordis does not validate for us here
+ * (the row declares no `config` block, and a plugin that exports no `Config`
+ * is treated as schema-less), so the plugin resolves its own settings. Going
+ * through `configSchema` keeps the defaults in exactly one place: the schema.
+ */
 function resolveConfig(config) {
-  const c = config && typeof config === 'object' ? config : {};
+  let resolved;
+  try {
+    const result = configSchema['~standard'].validate(config ?? {});
+    resolved = result.issues ? {} : result.value;
+    if (result.issues) {
+      // Report and fall back rather than refusing to activate: a typo in a
+      // config block should not take the plugin offline.
+      for (const issue of result.issues) {
+        process.emitWarning(`[ascii-h3-director] config: ${issue.message}`, { code: 'ASCII_H3_CONFIG' });
+      }
+    }
+  } catch {
+    resolved = {};
+  }
   return {
-    defaultDuration: Number.isFinite(c.defaultDuration) ? c.defaultDuration : 15,
-    defaultRatio: typeof c.defaultRatio === 'string' ? c.defaultRatio : '21:9',
-    defaultPalette: typeof c.defaultPalette === 'string' ? c.defaultPalette : 'brutalist-digital',
-    defaultRamp: typeof c.defaultRamp === 'string' ? c.defaultRamp : 'brutalist',
-    outputDir: typeof c.outputDir === 'string' && c.outputDir.trim() ? c.outputDir : '.ascii-h3',
-    enforceGate: c.enforceGate !== false,
+    ...resolved,
+    outputDir: typeof resolved.outputDir === 'string' && resolved.outputDir.trim()
+      ? resolved.outputDir
+      : '.ascii-h3',
+    enforceGate: resolved.enforceGate !== false,
   };
 }
 

@@ -1,20 +1,19 @@
 # ASCII H3 Director — DeepSeek Harness bundle patch.
 #
-# This is a top-level YAML array of loader patch entries. It inserts two rows:
-# the Host plugin (agent tools + system-prompt section) and the Client page
-# (the Director Console rendered in the Web UI).
+# This is a top-level YAML array of loader patch entries. It inserts ONE row:
+# the Host plugin (agent tools + system-prompt section).
 #
-# Tune the Host row's `config` here, or override it from your own
-# cordis.patch.yml so your settings survive upgrades.
+# The Client half is not a loader row. The Harness discovers it from this
+# package's manifest — `dsh.client.platform: web` plus the `./client` export —
+# and loads it into the Web page, where it registers the Director Console page
+# and the sidebar entry.
+#
+# NOTE: this row deliberately omits `config`. Cordis treats a plugin that
+# exports no Config schema as though it *were* one, so a literal config object
+# here would be read as a Standard Schema. Every field is optional and
+# defaulted in code, so omitting the block is the correct minimal form.
+# To override a default, add a full config block to your own
+# cordis.patch.yml targeting this row id.
 - insert:
     - id: ascii-h3-director
       name: '@yankafei/ascii-h3-director'
-      config:
-        defaultDuration: 15
-        defaultRatio: '21:9'
-        defaultPalette: brutalist-digital
-        defaultRamp: brutalist
-        outputDir: '.ascii-h3'
-- insert:
-    - id: ascii-h3-director-ui
-      name: '@yankafei/ascii-h3-director/client'

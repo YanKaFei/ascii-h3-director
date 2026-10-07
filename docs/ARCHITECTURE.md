@@ -143,3 +143,52 @@ node test/engine.test.js        # determinism and invariants
 
 `doctor` renders a frame and asserts it produced cells, so a broken renderer
 cannot report healthy.
+
+## Two Harness facts worth writing down
+
+Both were discovered by installing the plugin into a live profile, and both are
+easy to get wrong.
+
+### 1. A plugin that exports no `Config` is treated as though it *were* one
+
+Cordis resolves a row's config with:
+
+```js
+function resolveConfig(runtime, config) {
+  if (!runtime.Config) return config;            // no schema → pass raw config through
+  const result = runtime.Config['~standard'].validate(config);   // Standard Schema v1
+  ...
+}
+```
+
+If the plugin exports no `Config`, the guard returns the **raw config object**
+unchanged — and if that object came from the row's `config:` block, it is then
+mistaken for a schema. The next consumer reads `config['~standard']` and throws
+`Cannot read properties of undefined (reading 'validate')`.
+
+The fix is to give the row no `config` block at all while the plugin exports no
+`Config`. That is what `cordis.patch.yml` does here: every setting is optional
+and defaulted, so the correct minimal row is `{id, name}`.
+
+### 2. The `~standard` vendor must be `schemastery` for the Loader to see a schema
+
+`cordis-plugin-loader` decides whether it understands a config schema with:
+
+```js
+function isSchemastery(schema) {
+  return schema?.['~standard'].vendor === 'schemastery';
+}
+```
+
+A schema declaring any other vendor is compared **raw** rather than field-by-field,
+which only matters for schemas that declare volatile fields. This plugin
+deliberately declares none, so it publishes its own vendor name and accepts raw
+comparison. Consequently the tool config schema is exported as `configSchema`
+rather than `Config`: `Config` would re-enter the path in fact 1.
+
+### 3. The Client half is not a loader row
+
+The Client page is discovered from the package manifest
+(`dsh.client.platform: web` plus the `./client` export) and loaded into the Web
+page. Adding a second `insert` row for `'<package>/client'` makes the Loader try
+to import a browser module in Node, which fails. One Host row is the whole patch.
