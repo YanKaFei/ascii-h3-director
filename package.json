@@ -74,7 +74,8 @@
   },
   "scripts": {
     "doctor": "node src/cli.js doctor",
-    "test": "node test/engine.test.js",
-    "demo": "node src/cli.js plan \"a 15 second ASCII film about memory collapsing into language\""
+    "test": "node test/engine.test.js && node test/docs.test.js",
+    "demo": "node src/cli.js plan \"a 15 second ASCII film about memory collapsing into language\"",
+    "test:docs": "node test/docs.test.js"
   }
 }
