@@ -7,7 +7,7 @@
 [![agent skill](https://img.shields.io/badge/agent%20skill-SKILL.md-black.svg)](#install)
 [![model](https://img.shields.io/badge/video-MiniMax--H3-black.svg)](https://github.com/MiniMax-AI/MiniMax-H3)
 
-**中文** · [日本語](#日本語) · [English](#english)
+[中文](README.md) · [English](README.en.md) · [한국어](README.ko.md) · [日本語](README.ja.md) · [Français](README.fr.md)
 
 ---
 
