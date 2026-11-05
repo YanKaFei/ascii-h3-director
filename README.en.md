@@ -1,5 +1,7 @@
 # ASCII H3 Director
 
+<p align="center" data-ecosystem-nav="1"><sub><a href="https://github.com/YanKaFei/Costume-Director-Vault-Starter">Costume</a> · <a href="https://github.com/YanKaFei/art-aesthetic-vault">Art</a> · <a href="https://github.com/YanKaFei/ascii-cinema-engine">ASCII Cinema</a> · <a href="https://github.com/YanKaFei/ascii-h3-director">ASCII H3</a> · <a href="https://github.com/YanKaFei/2d-limited-mv-studio">2D MV</a> · <a href="https://github.com/YanKaFei/virtual-heroine-atlas">Virtual Heroine</a></sub></p>
+
 **Turn a thought into a transforming chain of characters.**
 
 ASCII H3 Director is a director tool for **MiniMax H3**: it compiles a free description into a transformation chain, a compact prompt written for time rather than prose, and a quality gate that can stop you before you pay. It is both a **DeepSeek Harness (DSH) plugin** and a portable **Agent Skill**.
@@ -37,7 +39,6 @@ Describe a shot, a transformation, or a sequence. The skill returns a FilmSpec, 
 
 MIT. See [LICENSE](LICENSE).
 
-<p align="center" data-ecosystem-nav="1"><sub><a href="https://github.com/YanKaFei/Costume-Director-Vault-Starter">Costume</a> · <a href="https://github.com/YanKaFei/art-aesthetic-vault">Art</a> · <a href="https://github.com/YanKaFei/ascii-cinema-engine">ASCII Cinema</a> · <a href="https://github.com/YanKaFei/ascii-h3-director">ASCII H3</a> · <a href="https://github.com/YanKaFei/2d-limited-mv-studio">2D MV</a> · <a href="https://github.com/YanKaFei/virtual-heroine-atlas">Virtual Heroine</a></sub></p>
 
 
 ## DSH ecosystem
