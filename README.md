@@ -946,3 +946,12 @@ ascii-h3-director/
 ### License
 
 MIT. Contributions: keep the three languages in sync and leave `ascii-h3 doctor` green.
+
+## DSH ecosystem
+
+- [Costume Director Vault Starter](https://github.com/YanKaFei/Costume-Director-Vault-Starter) — costume visual knowledge skill
+- [Art Aesthetic Vault](https://github.com/YanKaFei/art-aesthetic-vault) — visual style layers
+- [ASCII H3 Director](https://github.com/YanKaFei/ascii-h3-director) — ASCII / kinetic-typography direction
+- [2D Limited MV Studio](https://github.com/YanKaFei/2d-limited-mv-studio) — 2D anime MV prompt package
+- [Virtual Heroine Atlas](https://github.com/YanKaFei/virtual-heroine-atlas) — virtual character design research
+- [SmartStaff AI](https://github.com/YanKaFei/smartstaff-ai-deepseek-plugin) — restaurant workforce SaaS test framework
